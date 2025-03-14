@@ -3,23 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Martin weboldala</title>
-    <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Random Szám Generátor</title>
 </head>
 <body>
-    <link rel="stylesheet" href="./styles.css">
-    <div class="dropdown">
-        <button class="dropbtn">Test</button>
-        <div class="menu">
-            <a href="#">Első link</a>
-        </div>
-    </div>
+    <h1>Random Szám Generátor</h1>
+    <p id="output">Kattints a gombra egy random szám generálásához.</p>
+    <button onclick="generateRandom()">Generálás</button>
+    <ul id="seedList"></ul> <!-- A generált számok listája -->
+
+    <script>
+        let count = 0; // A generált számok számlálója
+
+        function generateRandom() {
+            // Random szám generálása a megadott tartományban
+            const min = BigInt(-9223372036854775808);
+            const max = BigInt(9223372036854775807);
+            const random = min + BigInt(Math.floor(Math.random() * Number(max - min + 1n)));
+
+            // Számláló növelése és a szám kiírása
+            count++;
+            const listItem = document.createElement("li");
+            listItem.innerText = `${count}.seed: ${random}`;
+            document.getElementById("seedList").appendChild(listItem);
+
+            // Az eredmény tárolása
+            const seeds = JSON.parse(localStorage.getItem("seeds")) || [];
+            seeds.push(`${count}.seed: ${random}`);
+            localStorage.setItem("seeds", JSON.stringify(seeds));
+        }
+
+        // Korábban generált számok betöltése oldalbetöltéskor
+        window.onload = function() {
+            const seeds = JSON.parse(localStorage.getItem("seeds")) || [];
+            const seedList = document.getElementById("seedList");
+            seeds.forEach((seed) => {
+                const listItem = document.createElement("li");
+                listItem.innerText = seed;
+                seedList.appendChild(listItem);
+            });
+            count = seeds.length; // Frissítjük a számlálót
+        };
+    </script>
 </body>
 </html>
